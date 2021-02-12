@@ -36,7 +36,7 @@ namespace CatiaProductTreeMap.Services
             {
                 catia = (INFITF.Application)System.Runtime.InteropServices.Marshal.GetActiveObject("CATIA.Application");
                 activePart = catia.ActiveEditor.ActiveObject as Part;
-                catiaGeometry = new CATGeometry(catia, activePart);
+                //catiaGeometry = new CATGeometry(catia, activePart);
                 sel = catia.ActiveEditor.Selection;
             }
             catch (Exception)

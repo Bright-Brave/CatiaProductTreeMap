@@ -1,4 +1,8 @@
 ﻿using CatiaProductTreeMap.Model;
+using CatiaProductTreeMap.Services;
+using MECMOD;
+using PLMModelerBaseIDL;
+using ProductStructureClientIDL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VPMEditorContextIDL;
 
 namespace CatiaProductTreeMap.UI
 {
@@ -40,56 +45,42 @@ namespace CatiaProductTreeMap.UI
             VPMInstances vpmInstsL1 = vpmRefOnRoot.Instances;
             // 遍历实例
             // 从1开始
-            for (int i = 1; i < vpmInstsL1.Count + 1; i++)
+            m += vpmRefOnRoot.GetAttributeValue("V_Name");
+            m += "\r\n";
+            Recursion(vpmInstsL1);
+
+            MessageBox.Show(m);
+        }
+        string m = "";
+        private void Recursion(PLMEntities vpmInsts)
+        {
+            for (int i = 1; i < vpmInsts.Count + 1; i++)
             {
-                VPMInstance vpmInstL1 = vpmInstsL1.Item(i) as VPMInstance;
+                VPMInstance vpmInstL1 = vpmInsts.Item(i) as VPMInstance;
                 // 拿到reference才能拿到instances
                 VPMReference vpmRefInstL1 = vpmInstL1.ReferenceInstanceOf;
+                m += vpmRefInstL1.GetAttributeValue("V_Name");
+                m += "\r\n";
                 VPMInstances vpmInstsL2 = vpmRefInstL1.Instances;
 
-                //string m = vpmInstsL2.Count.ToString();
-
-                for (int j = 1; j < vpmInstsL2.Count + 1; j++)
+                if (vpmInstsL2.Count > 0)
                 {
-                    VPMInstance vpmInstL2 = vpmInstsL2.Item(j) as VPMInstance;
-                    VPMReference vpmRefInstL2 = vpmInstL2.ReferenceInstanceOf;
-                    //MessageBox.Show(vpmInstL2.get_Name());
-                    //MessageBox.Show(vpmRefInstL2.GetAttributeValue("V_Name"));
-
-                    VPMRepInstances vpmRefInstsL3 = vpmRefInstL2.RepInstances;
+                    Recursion(vpmInstsL2);
+                }
+                else
+                {
+                    VPMRepInstances vpmRefInstsL3 = vpmRefInstL1.RepInstances;
 
                     for (int k = i; k < vpmRefInstsL3.Count + 1; k++)
                     {
                         VPMRepInstance vpmRepInstL3 = vpmRefInstsL3.Item(k) as VPMRepInstance;
                         VPMRepReference vpmRepRefL3 = vpmRepInstL3.ReferenceInstanceOf;
-                        Part part = vpmRepRefL3.GetItem("Part") as Part;
+                        string n = vpmRepRefL3.get_Name();
+                        m += vpmRepRefL3.GetAttributeValue("V_Name");
+                        m += "\r\n";
                     }
+
                 }
-            }
-
-        }
-        private VPMInstances Recursion(VPMInstances vpmInsts)
-        {
-            for (int i = 1; i < vpmInsts.Count + 1; i++)
-            {
-                VPMInstance vpmInstL1 = vpmInsts.Item(i) as VPMInstance;
-                // 拿到reference才能拿到instances
-                VPMReference vpmRefInstL1 = vpmInstL1.ReferenceInstanceOf;
-                VPMInstances vpmInstsL2 = vpmRefInstL1.Instances;
-
-
-            }
-        }
-        private VPMInstances Recursion(VPMInstances vpmInsts)
-        {
-            for (int i = 1; i < vpmInsts.Count + 1; i++)
-            {
-                VPMInstance vpmInstL1 = vpmInsts.Item(i) as VPMInstance;
-                // 拿到reference才能拿到instances
-                VPMReference vpmRefInstL1 = vpmInstL1.ReferenceInstanceOf;
-                VPMInstances vpmInstsL2 = vpmRefInstL1.Instances;
-
-
             }
         }
     }
