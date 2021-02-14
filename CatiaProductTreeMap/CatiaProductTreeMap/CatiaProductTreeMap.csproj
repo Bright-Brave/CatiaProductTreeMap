@@ -138,6 +138,7 @@
     <Compile Include="BLL\Converters.cs" />
     <Compile Include="BLL\ValidationRules.cs" />
     <Compile Include="Model\CatException.cs" />
+    <Compile Include="Model\DefinitionNode.cs" />
     <Compile Include="Model\MainWinVM.cs" />
     <Compile Include="Services\CatiaService.cs" />
     <Compile Include="UI\MainWindow.xaml.cs">

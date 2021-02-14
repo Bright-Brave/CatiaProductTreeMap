@@ -26,69 +26,84 @@ namespace CatiaProductTreeMap.UI
     /// </summary>
     public partial class MainWindow : Window
     {
+        public List<DefinitionNode> DefinitionNodes { get; set; }
         public MainWinVM mainWinVM { get; set; }
+        //private string treeMsg = "";
+        //private string space = "";
+
         public MainWindow()
         {
             InitializeComponent();
-
-
+            DataContext = this;
+        }
+        
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
             CatiaService.InitializeCatia();
 
             PLMProductService service = (PLMProductService)CatiaService.catia.ActiveEditor.GetService("PLMProductService");
             VPMRootOccurrence vpmRootOcc = service.RootOccurrence;
-            //MessageBox.Show(vpmRootOcc.get_Name());
-            // 这一步很重要，需要从Occurrence  model 切换为 Reference-instance model
             VPMReference vpmRefOnRoot = vpmRootOcc.ReferenceRootOccurrenceOf;
-            //MessageBox.Show(vpmRefOnRoot.get_Name());
-            // MessageBox.Show(vpmRefOnRoot.get_Name());
-            // 获取根节点下的所有实例
+            // get all children of the root
             VPMInstances vpmInstsL1 = vpmRefOnRoot.Instances;
-            // 遍历实例
-            // 从1开始
-            m += vpmRefOnRoot.GetAttributeValue("V_Name");
-            m += "\r\n";
-            Recursion(vpmInstsL1);
-
-            MessageBox.Show(m);
+            DefinitionNode rootNode = new DefinitionNode();
+            DefinitionNodes.Add( rootNode );
+            rootNode.Name = vpmRefOnRoot.GetAttributeValue("V_Name");
+            //treeMsg += vpmRefOnRoot.GetAttributeValue("V_Name");
+            Recursion(vpmInstsL1, rootNode);
         }
-        string m = "";
-        // 层次标识符
-        string space = "";
-        private void Recursion(PLMEntities vpmInsts)
+        
+        private void Recursion(PLMEntities vpmInsts, DefinitionNode node)
         {
-            space += "----";
-            for (int i = 1; i < vpmInsts.Count + 1; i++)
+            List<DefinitionNode> definitionNodes = new List<DefinitionNode>();
+            //space += "----";
+            for ( int i = 1; i < vpmInsts.Count + 1; i++ )
             {
+                DefinitionNode definitionNode = new DefinitionNode();
+
                 VPMInstance vpmInstL1 = vpmInsts.Item(i) as VPMInstance;
+
                 // 拿到reference才能拿到instances
                 VPMReference vpmRefInstL1 = vpmInstL1.ReferenceInstanceOf;
-                m += space;
-                string n = vpmRefInstL1.GetAttributeValue("V_Name");
-                m += n;
-                m += "\r\n";
+
+                definitionNode.Name = vpmRefInstL1.GetAttributeValue("V_Name");
+
+                definitionNodes.Add(definitionNode);
+                //treeMsg += space;
+                //string n = vpmRefInstL1.GetAttributeValue("V_Name");
+                //treeMsg += n;
+                //treeMsg += "\r\n";
                 VPMInstances vpmInstsL2 = vpmRefInstL1.Instances;
 
                 if (vpmInstsL2.Count > 0)
                 {
-                    Recursion(vpmInstsL2);
-                    
+                    //node.Children = definitionNodes;
+                    Recursion(vpmInstsL2, definitionNode);
                 }
                 else
                 {
                     VPMRepInstances vpmRefInstsL3 = vpmRefInstL1.RepInstances;
-                    space += "----";
+
+                    List<DefinitionNode> nodes = new List<DefinitionNode>();
+                    //space += "----";
                     for (int k = i; k < vpmRefInstsL3.Count + 1; k++)
                     {
                         VPMRepInstance vpmRepInstL3 = vpmRefInstsL3.Item(k) as VPMRepInstance;
                         VPMRepReference vpmRepRefL3 = vpmRepInstL3.ReferenceInstanceOf;
-                        n = vpmRepRefL3.GetAttributeValue("V_Name");
-                        m += space;
-                        m += n;
-                        m += "\r\n";
+                        DefinitionNode oneNode = new DefinitionNode();
+                        oneNode.Name = vpmRepRefL3.GetAttributeValue("V_Name");
+                        nodes.Add(oneNode);
+
+                        //n = vpmRepRefL3.GetAttributeValue("V_Name");
+                        //treeMsg += space;
+                        //treeMsg += n;
+                        //treeMsg += "\r\n";
                     }
-                    space = "----";
+                    definitionNode.Children = nodes;
                 }
+                
             }
+            node.Children = definitionNodes;
         }
     }
 }

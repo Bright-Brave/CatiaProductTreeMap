@@ -6,7 +6,7 @@
         xmlns:bll="clr-namespace:CatiaProductTreeMap.BLL"
         xmlns:local="clr-namespace:CatiaProductTreeMap" Topmost="True"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
-        Title="MainWindow" Height="300" Width="400">
+        Title="MainWindow" Height="600" Width="400" Loaded="Window_Loaded">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,6 +15,12 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        
+        <TreeView Name="treeView" ItemsSource="{Binding DefinitionNodes}">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                    <TextBlock Text="{Binding Name}"/>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
     </Grid>
 </Window>
