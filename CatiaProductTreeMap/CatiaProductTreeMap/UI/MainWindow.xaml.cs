@@ -52,34 +52,41 @@ namespace CatiaProductTreeMap.UI
             MessageBox.Show(m);
         }
         string m = "";
+        // 层次标识符
+        string space = "";
         private void Recursion(PLMEntities vpmInsts)
         {
+            space += "----";
             for (int i = 1; i < vpmInsts.Count + 1; i++)
             {
                 VPMInstance vpmInstL1 = vpmInsts.Item(i) as VPMInstance;
                 // 拿到reference才能拿到instances
                 VPMReference vpmRefInstL1 = vpmInstL1.ReferenceInstanceOf;
-                m += vpmRefInstL1.GetAttributeValue("V_Name");
+                m += space;
+                string n = vpmRefInstL1.GetAttributeValue("V_Name");
+                m += n;
                 m += "\r\n";
                 VPMInstances vpmInstsL2 = vpmRefInstL1.Instances;
 
                 if (vpmInstsL2.Count > 0)
                 {
                     Recursion(vpmInstsL2);
+                    
                 }
                 else
                 {
                     VPMRepInstances vpmRefInstsL3 = vpmRefInstL1.RepInstances;
-
+                    space += "----";
                     for (int k = i; k < vpmRefInstsL3.Count + 1; k++)
                     {
                         VPMRepInstance vpmRepInstL3 = vpmRefInstsL3.Item(k) as VPMRepInstance;
                         VPMRepReference vpmRepRefL3 = vpmRepInstL3.ReferenceInstanceOf;
-                        string n = vpmRepRefL3.get_Name();
-                        m += vpmRepRefL3.GetAttributeValue("V_Name");
+                        n = vpmRepRefL3.GetAttributeValue("V_Name");
+                        m += space;
+                        m += n;
                         m += "\r\n";
                     }
-
+                    space = "----";
                 }
             }
         }
