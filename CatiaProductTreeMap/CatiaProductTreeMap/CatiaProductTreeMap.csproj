@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>3DEXP2021.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CATObjectModelerLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -173,6 +176,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="3DEXP2021.ico" />
     <Content Include="Packages\CATObjectModelerLibrary.dll" />
     <Content Include="Packages\DotNetProjects.SVGImage.dll" />
     <Content Include="Packages\Interop.CATOpnsMeasureIDL.dll" />

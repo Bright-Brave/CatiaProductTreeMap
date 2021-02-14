@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
 using System.IO;
@@ -21,14 +22,14 @@ namespace CatiaProductTreeMap.Model
         /// <summary>
         /// 
         /// </summary>
-        private string multiWD;
-        public string MultiWD
+        private ObservableCollection<DefinitionNode> definitionNodes;
+        public ObservableCollection<DefinitionNode> DefinitionNodes
         {
-            get { return multiWD; }
+            get { return definitionNodes; }
             set
             {
-                multiWD = value;
-                OnPropertyChanged("MultiWD");
+                definitionNodes = value;
+                OnPropertyChanged("DefinitionNodes");
             }
         }
 
@@ -39,7 +40,7 @@ namespace CatiaProductTreeMap.Model
         /// </summary>
         public MainWinVM()
         {
-
+            DefinitionNodes = new ObservableCollection<DefinitionNode>();
         }
     }
 }
